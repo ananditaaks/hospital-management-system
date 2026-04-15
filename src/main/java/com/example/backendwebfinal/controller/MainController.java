@@ -1,95 +1,76 @@
 package com.example.backendwebfinal.controller;
 
-import com.example.backendwebfinal.entity.Appointment;
-import com.example.backendwebfinal.entity.Doctor;
-import com.example.backendwebfinal.entity.Donor;
-import com.example.backendwebfinal.entity.Laboratory;
-import com.example.backendwebfinal.service.AppService;
-import com.example.backendwebfinal.service.AppServiceImpl;
-import com.example.backendwebfinal.service.DoctorService;
-import com.example.backendwebfinal.service.DonorService;
-import com.example.backendwebfinal.service.LabService;
-
-import java.util.List;
-
+import com.example.backendwebfinal.entity.*;
+import com.example.backendwebfinal.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class MainController {
 
     @Autowired
     private AppService appService;
-    
-    @Autowired
-    private AppServiceImpl appServiceImpl;
 
     @Autowired
     private DonorService donorService;
 
     @Autowired
     private LabService labService;
-    
+
     @Autowired
     private DoctorService doctorService;
-    
 
-
+    // Load home page
     @GetMapping("/")
-    public String index(Model model){
+    public String showHomePage(Model model) {
         model.addAttribute("appointment", new Appointment());
         model.addAttribute("donor", new Donor());
         model.addAttribute("laboratories", labService.getAllLabs());
         return "index";
     }
 
+    // Display doctor list
     @GetMapping("/doctor-list")
-    public String doctorList(Model model) {
-    	model.addAttribute("doctor", new Doctor());
+    public String showDoctorList(Model model) {
+        model.addAttribute("doctor", new Doctor());
         model.addAttribute("doctors", doctorService.getAllDoctors());
         return "doctor-list";
     }
-    
-    
-   ////////////////////// 
+
+    // Load booking status page
     @GetMapping("/bookingstatus")
-    public String bookingstatus() {
-    
-        return "bookingstatus";
-    }
-    
-    @GetMapping("/add")
-    public String add(Model model) {
-    	List<Appointment> listemployee = appServiceImpl.listAll();
-        model.addAttribute("employee", new Appointment());
+    public String showBookingStatusPage() {
         return "bookingstatus";
     }
 
-    
+    // Load booking status form
+    @GetMapping("/add")
+    public String showBookingForm(Model model) {
+        model.addAttribute("appointment", new Appointment());
+        return "bookingstatus";
+    }
+
+    // Search appointment
     @PostMapping("/search")
-     public String doSearchEmployee(@ModelAttribute Appointment formData, Model model) {
-            Appointment emp = appServiceImpl.get(formData.getId());
-            model.addAttribute("employee", emp);
-            return "index";            
-     }
-    ////////////////////
+    public String searchAppointment(@ModelAttribute Appointment formData, Model model) {
+        Appointment appointment = appService.getAppById(formData.getId());
+        model.addAttribute("appointment", appointment);
+        return "index";
+    }
+
+    // Create appointment
     @PostMapping("/")
-    public String MakeApp(@ModelAttribute Appointment appointment) {
+    public String createAppointment(@ModelAttribute Appointment appointment) {
         appService.saveApp(appointment);
         return "index";
     }
 
+    // Create donation
     @PostMapping("/donation")
-    public String MakeDonation(@ModelAttribute Donor donor) {
+    public String createDonation(@ModelAttribute Donor donor) {
         donorService.saveDonor(donor);
         return "redirect:/";
     }
-
-
-
-
 }
