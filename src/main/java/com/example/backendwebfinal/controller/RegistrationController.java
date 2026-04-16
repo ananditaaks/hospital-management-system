@@ -4,33 +4,29 @@ import com.example.backendwebfinal.entity.User;
 import com.example.backendwebfinal.service.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class RegistrationController {
 
-
-
     @Autowired
     private MyUserDetailsService userDetailsService;
 
-
+    // Provide default user object for form binding
     @ModelAttribute("user")
-    public User userRegistration() {
+    public User createUserModel() {
         return new User();
     }
 
+    // Load registration page
     @GetMapping("/registration")
-    String registration(Model model) {
-        model.addAttribute("users", new User());
+    public String showRegistrationPage() {
         return "registration";
     }
 
+    // Handle user registration
     @PostMapping("/registration")
-        String userRegistration(@ModelAttribute("user") User user) {
+    public String registerUser(@ModelAttribute("user") User user) {
         userDetailsService.saveUser(user);
         return "redirect:/login";
     }
