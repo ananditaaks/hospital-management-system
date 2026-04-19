@@ -1,9 +1,9 @@
 package com.example.backendwebfinal.entity;
 
-
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.util.*;
 
 @Data
@@ -15,13 +15,24 @@ public class User {
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String firstName;
-    private String lastName;
-    private String username;
-    private String password;
-    private boolean enabled;
-//    private boolean enabled;
 
+    @NotNull(message = "First name is required")
+    @Size(min = 2, max = 50)
+    private String firstName;
+
+    @NotNull(message = "Last name is required")
+    @Size(min = 2, max = 50)
+    private String lastName;
+
+    @NotNull(message = "Username is required")
+    @Size(min = 4, max = 50)
+    private String username;
+
+    @NotNull(message = "Password is required")
+    @Size(min = 6, message = "Password must be at least 6 characters")
+    private String password;
+
+    private boolean enabled;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
@@ -31,64 +42,7 @@ public class User {
     )
     private Set<Role> roles;
 
-
-    public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
-
-	public Set<Role> getRoles() {
-		return roles;
-	}
-
-	public void setRoles(Set<Role> roles) {
-		this.roles = roles;
-	}
-
-	public User() {
+    public User() {
     }
 
     public User(String firstName, String lastName, String username, String password, Set<Role> roles) {
@@ -107,14 +61,11 @@ public class User {
         this.enabled = enabled;
     }
 
-
+    // Check if user has specific role
     @Transient
     public boolean hasRole(String roleName) {
-        Iterator<Role> iterator = roles.iterator();
-
-        while (iterator.hasNext()) {
-            Role roles = iterator.next();
-            if (roles.getName().equals(roleName)) {
+        for (Role role : roles) {
+            if (role.getName().equals(roleName)) {
                 return true;
             }
         }
