@@ -1,13 +1,10 @@
 package com.example.backendwebfinal.entity;
 
-
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.sql.Time;
+import javax.validation.constraints.*;
 import java.util.Date;
 
 @Data
@@ -20,9 +17,13 @@ public class Donor {
     private int id;
 
     @Column(name = "full_name")
+    @NotNull(message = "Full name is required")
+    @Size(min = 2, max = 50)
     private String fullName;
 
     @Column(name = "email")
+    @NotNull(message = "Email is required")
+    @Email(message = "Invalid email format")
     private String email;
 
     @CreationTimestamp
@@ -30,65 +31,19 @@ public class Donor {
     private Date date;
 
     @Column(name = "message")
+    @NotNull(message = "Message is required")
+    @Size(min = 5, max = 255)
     private String message;
 
-
     @ManyToOne
+    @NotNull(message = "Laboratory is required")
     private Laboratory laboratory;
 
-    public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getFullName() {
-		return fullName;
-	}
-
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public Date getDate() {
-		return date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
-	}
-
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
-	}
-
-	public Laboratory getLaboratory() {
-		return laboratory;
-	}
-
-	public void setLaboratory(Laboratory laboratory) {
-		this.laboratory = laboratory;
-	}
-
-	public Donor() {
+    public Donor() {
     }
 
-    public Donor(String firstName, String email, Date date, String message, Laboratory laboratory) {
-        this.fullName = firstName;
+    public Donor(String fullName, String email, Date date, String message, Laboratory laboratory) {
+        this.fullName = fullName;
         this.email = email;
         this.date = date;
         this.message = message;
