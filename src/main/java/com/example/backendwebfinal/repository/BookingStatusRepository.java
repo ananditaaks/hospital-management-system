@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 import com.example.backendwebfinal.entity.Appointment;
 
 import java.util.List;
-
+//committing it
 @Repository
 public interface BookingStatusRepository extends JpaRepository<Appointment, Integer> {
 
